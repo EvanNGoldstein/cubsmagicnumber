@@ -1,1 +1,1 @@
-web: python3 magic_num/server.py
+web: gunicorn magic_num.server:app --log-file -
