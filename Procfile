@@ -1,1 +1,1 @@
-web: gunicorn magic_num.server:app --log-file -
+web: gunicorn magic_num.app:app --log-file -
