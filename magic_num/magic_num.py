@@ -1,37 +1,52 @@
 import requests
 
-def magic_num():
+def get_standings(team_name):
     url = "https://erikberg.com/mlb/standings.json"
     headers = {
         "User-agent": "cubsmagicnumber/0.0.0 (eng2112@columbia.edu)"
     }
 
-    teams = {}
-    response = requests.get(url, headers=headers)
+    standings = {}
 
-    if response.status_code == 200:
-        response = response.json()
-    else:
-        return response.reason
-
+    response = requests.get(url, headers=headers).json()
 
     for team in response["standing"]:
-        teams[team["last_name"]] = (team["won"], team["lost"])
-        # if team["last_name"] == "Cubs":
-        #     cubs = team
-        # if team["last_name"] == "Giants":
-        #     giants = team
+        standings[team["last_name"]] = team
 
-    cubs = teams["Cubs"]
-    giants = teams["Giants"]
-    nationals = teams["Nationals"]
-    if cubs and giants:
-        magic_num_giants = 163 - int(cubs[0]) - int(giants[1])
-        magic_num_nationals = 163 - int(cubs[0]) - int(nationals[1])
-    if magic_num_giants >= magic_num_nationals:
-        magic_num = magic_num_giants
-    else:
-        magic_num = magic_num_nationals
+    league = standings[team_name]["conference"]
+    division_name = standings[team_name]["division"]
 
-    return (magic_num, response["standings_date"])
+
+    wins = standings[team_name]["won"]
+
+    max_wc_win = 0.0
+    top_wc_team = ""
+
+    wildcard = {}
+    division = {}
+
+    for team in standings:
+        if standings[team]["conference"] == league and standings[team]["rank"] != 1:
+            wildcard[team] = standings[team]
+            if standings[team]["win_percentage"] > max_wc_win:
+                max_wc_win = standings[team]["win_percentage"]
+                top_wc_team = team
+
+        if standings[team]["conference"] == league and standings[team]["division"] == division_name:
+            division[team] = standings[team]
+
+    wildcard = {team:wildcard[team] for team in wildcard if team != top_wc_team} #TODO: consider moving this logic out of this function
+
+    return (wildcard, division, response["standings_date"])
+
+def magic_num(team_name, team_wins, standings):
+    magic_num = 0
+
+    for team in standings:
+        if team != team_name:
+            elim_num = 163 - team_wins - standings[team]["lost"]
+            if(elim_num > magic_num):
+                magic_num = elim_num
+
+    return magic_num
 
