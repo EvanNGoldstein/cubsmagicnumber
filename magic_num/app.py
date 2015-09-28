@@ -21,10 +21,10 @@ def index():
     wc_magic_num = magic_num("Cubs", division["Cubs"]["won"], wildcard)
     div_magic_num = magic_num("Cubs", division["Cubs"]["won"], division)
 
-    magic_num = min(wc_magic_num, div_magic_num)
-    if(magic_num <= 0):
-        magic_num = "0. The Cubs have clinched a playoff berth!"
-    return render_template("index.html", num=magic_num, last_updated=standings_date)
+    magic_number = min(wc_magic_num, div_magic_num)
+    if(magic_number <= 0):
+        magic_number = "0. The Cubs have clinched a playoff berth!"
+    return render_template("index.html", num=magic_number, last_updated=standings_date)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)
