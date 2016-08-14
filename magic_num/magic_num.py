@@ -1,9 +1,9 @@
 import requests
 
-def get_standings(team_name):
+def get_standings():
     url = "https://erikberg.com/mlb/standings.json"
     headers = {
-        "User-agent": "cubsmagicnumber/0.0.0 (eng2112@columbia.edu)"
+        "User-Agent": "cubsmagicnumber/0.0.0 (eng2112@columbia.edu)"
     }
 
     standings = {}
@@ -13,6 +13,9 @@ def get_standings(team_name):
     for team in response["standing"]:
         standings[team["last_name"]] = team
 
+    return (standings, response["standings_date"])
+
+def get_standings_for_team(standings, team_name):
     league = standings[team_name]["conference"]
     division_name = standings[team_name]["division"]
 
@@ -37,7 +40,7 @@ def get_standings(team_name):
 
     wildcard = {team:wildcard[team] for team in wildcard if team != top_wc_team} #TODO: consider moving this logic out of this function
 
-    return (wildcard, division, response["standings_date"])
+    return (wildcard, division)
 
 def magic_num(team_name, team_wins, standings):
     magic_num = 0
