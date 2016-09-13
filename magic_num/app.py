@@ -34,7 +34,7 @@ def team(team):
     div_magic_num = magic_num(team, division[team]["won"], division)
 
     if(wc_magic_num <= 0):
-        wc_magic_num = "0. The %s have clinched a playoff berth!" % team
+        wc_magic_num = "0. The %s have clinched a playoff berth!" % team if div_magic_num > 0 else "Who cares? The %s have clinched the division!" % team
     if(div_magic_num <= 0):
         div_magic_num = "0. The %s have clinched the division!" % team
     return render_template("team.html", div_num=div_magic_num, wc_num=wc_magic_num, last_updated=standings_date, team=possessive(team))
